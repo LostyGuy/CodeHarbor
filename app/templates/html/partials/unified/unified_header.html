@@ -1,15 +1,14 @@
-<header>
-    <div id="left">
-       <img src="/images/LostyGuyBusiness.ico" alt="Logo" width="50" height="50">
-       <h3>CodeHarbor</h3>
-    </div>
-
-    <div id="right">
+<header class="float-left h-20 w-full bg-blue-400/70 py-6.5 bg-s font-bold">
+  <div class="float-left">
+    <!-- <img src="/images/LostyGuyBusiness.ico" alt="Logo" width="50" height="50"> -->
+    <h3 class="pr-20 pl-10 font-medium">CodeHarbor</h3>
+  </div>
+  <div class="float-right space-x-3 pr-6">
         {%include Status_Snippet%}
-		<div id="search">
-			<form action="/search_request" method="get">
-				<input type="search" name="Search_Prompt" id="S_P" placeholder="Search">
-			</form>
-		</div>
-    </div>
+      <div class="float-right">
+        <form action="/search_request" method="get">
+          <input class="border-2 rounded-l" type="search" name="Search_Prompt" id="S_P" placeholder="Search" />
+        </form>
+      </div>
+  </div>
 </header>
