@@ -37,6 +37,16 @@
  - Python setup:
     - Python 3.11.9 or later
     - Create Virtual Environment
+    [Initializing_venv](Readme_files/Initializing_venv.gif)
+    ```py
+        # python -m venv .venv
+        # .venv\Scripts\activate
+    ```
+    - Install Dependencies
+        [Installing_Dependencies](Readme_files/Initializing_dependencies.gif)
+    ```py
+        # pip install -r requirements.txt
+    ```
     
 
 <!-- WebApp - Github
