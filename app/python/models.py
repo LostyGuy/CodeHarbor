@@ -92,7 +92,7 @@ class secret(Base):
         index = True,
         primary_key = True,
         unique = True,
-        autoincrement= True,
+        autoincrement = True,
     )
     SECRET_SALT_KEY: str = Column(
         String,
@@ -104,3 +104,38 @@ class secret(Base):
         index= True,
         nullable= False,
     )
+    
+class deleted_users(Base):
+    __tablename__ = "deleted_users"
+    _tablename__ = "users"
+    ID: int = Column(
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+        index=True,
+        )
+    user_ID: int = Column(
+        Integer,
+        index = True,
+    )
+    nickname: str = Column(
+        String(20),
+        index=True,
+        )
+    email: str = Column(
+        String(20),
+        index=True,
+        )
+    hashed_password: str = Column(
+        String(30),
+        index=True,
+        )
+    time_stamp: str = Column(
+        TIMESTAMP,
+        index=True,
+        )
+    deleted_at: str = Column(
+        TIMESTAMP,
+        index= True,
+        )
+    

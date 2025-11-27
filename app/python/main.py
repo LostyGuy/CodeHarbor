@@ -4,7 +4,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse, RedirectResponse
 from python import models, database
 from sqlalchemy.orm import Session
-from sqlalchemy import exists, or_, and_, func
+from sqlalchemy import exists, or_, and_, func, delete
 from pathlib import Path
 import logging as log
 import hashlib
@@ -193,18 +193,22 @@ async def login_request(request: Request, db: Session = Depends(database.get_db)
         return form_login, hashed_password
     
     def login_attempt(login, hashed_password) -> str:
-        get_user_ID: int = db.query(models.users.ID).filter(
-            models.users.email == login,
-            models.users.hashed_password == hashed_password,
-        ).one_or_none()[0] #returns int when .first() returns tuple
-        if get_user_ID:
-            # log_info("User exists")
-            login_attempt_result: bool = True
-        else:
-            # log_info("Log In data are wrong")
-            login_attempt_result: bool = False
-        
-        return login_attempt_result, get_user_ID
+        try:
+            get_user_ID: int = db.query(models.users.ID).filter(
+                models.users.email == login,
+                models.users.hashed_password == hashed_password,
+            ).one_or_none()[0] #returns int when .first() returns tuple
+        except Exception as e:
+            log_info("Login_Error: ", e)
+        finally:
+            if get_user_ID:
+                log_info("User exists")
+                login_attempt_result: bool = True
+            else:
+                log_info("Log In data are wrong")
+                login_attempt_result: bool = False
+            
+            return login_attempt_result, get_user_ID
     
     login_data = await request.form()
         
@@ -314,6 +318,7 @@ async def add_project(request: Request, db: Session = Depends(database.get_db), 
     else:
         return RedirectResponse(url=app.url_path_for("index"), status_code=303)
 
+# TODO: logged and non logged view
 @app.post("/loged/profile/add_project_request", response_class=HTMLResponse)
 async def add_project(request: Request, db: Session = Depends(database.get_db), session: str = Cookie(default=None, alias="session")):
     
@@ -373,3 +378,38 @@ async def search(request: Request, session: str = Cookie(default=None, alias="se
         "Search_Result" : Search_Result,
         "Search_Prompt" : Search_Prompt,
         })
+
+@app.get("/delete_user", response_class=HTMLResponse)
+async def solf_delete(request: Request, session: str = Cookie(default=None, alias="session"), db: Session = Depends(database.get_db)):
+    Status_Snippet, session_active = active_session_HTML_Snippet(db, session,)
+    
+    if session_active:
+        try:
+            current_user = db.query(models.users).join(
+                models.session,
+                models.session.user_ID == models.users.ID
+            ).filter(models.session.token_value == session).first()
+            
+            move_user_to_deleted_records = models.deleted_users(
+                user_ID = current_user.ID,
+                nickname =  current_user.nickname,
+                hashed_password = current_user.hashed_password,
+                email = current_user.email,
+                time_stamp = current_user.time_stamp,
+                deleted_at = dt.datetime.now(),
+                )
+            
+            db.add(move_user_to_deleted_records)
+            
+            db.query(models.profile).filter(models.profile.user_ID == current_user.ID).delete()
+            db.query(models.session).filter(models.session.user_ID == current_user.ID).delete()
+            db.delete(current_user)
+            
+            db.commit()
+        except Exception as e:
+            log_info("Deletion Error: ", e)
+        finally:
+            return RedirectResponse(url=app.url_path_for("index"), status_code = 303,)
+    else:
+        log_info("Deletion passed without action")
+        return RedirectResponse(url=app.url_path_for("index"), status_code = 303,)

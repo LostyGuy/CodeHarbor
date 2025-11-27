@@ -7,13 +7,13 @@
  - Users data stored in SQLite database.
  - To store and restore sessions I used JWT technology with web cookies.
  - LogOut functionality that revokes access to JWT.
- - [] Deleting user from database (soft deletion)
+ - Deleting user from database (soft deletion)
 
 ## Storing Projects
  - Ability to add projects tied to user account
  - Setting whenever they are meant to be public or kept private
- - [] Changing it's privacy state
- - [] Deleting projects (permament delete)
+ - [ ] Changing it's privacy state
+ - Deleting projects (permament delete)
 
 ## Searching
  - Searching though public projects and returning those which contains provided keyword in titles or description.
@@ -37,16 +37,16 @@
  - Python setup:
     - Python 3.11.9 or later
     - Create Virtual Environment
-    [Initializing_venv](Readme_files/Initializing_venv.gif)
     ```py
         # python -m venv .venv
         # .venv\Scripts\activate
     ```
+    ![Initializing_venv](Readme_files/Initialize_venv.gif)
     - Install Dependencies
-        [Installing_Dependencies](Readme_files/Initializing_dependencies.gif)
     ```py
         # pip install -r requirements.txt
     ```
+    ![Installing_Dependencies](Readme_files/Initializing_dependencies.gif)
     
 
 <!-- WebApp - Github
