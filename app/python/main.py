@@ -203,22 +203,18 @@ async def login_request(request: Request, db: Session = Depends(database.get_db)
         return form_login, hashed_password
     
     def login_attempt(login, hashed_password) -> str:
-        try:
-            get_user_ID: int = db.query(models.users.ID).filter(
-                models.users.email == login,
-                models.users.hashed_password == hashed_password,
-            ).one_or_none()[0] #returns int when .first() returns tuple
-        except Exception as e:
-            log_info("Login_Error: ", e)
-        finally:
-            if get_user_ID:
-                log_info("User exists")
-                login_attempt_result: bool = True
-            else:
-                log_info("Log In data are wrong")
-                login_attempt_result: bool = False
+        get_user_ID: int = db.query(models.users.ID).filter(
+            models.users.email == login,
+            models.users.hashed_password == hashed_password,
+        ).one_or_none()[0] #returns int when .first() returns tuple
+        if get_user_ID:
+            log_info("User exists")
+            login_attempt_result: bool = True
+        else:
+            log_info("Log In data are wrong")
+            login_attempt_result: bool = False
             
-            return login_attempt_result, get_user_ID
+        return login_attempt_result, get_user_ID
     
     login_data = await request.form()
         
