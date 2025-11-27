@@ -1,8 +1,8 @@
 <main class="float-left min-h-full w-full bg-black pb-8 text-white">
     <h3 class="mt-2 text-center">Lastly Added</h3>
-    <section class="mt-6 mr-28 ml-28 bg-blue-950">
+    <section class="mt-6 w-2/3 bg-blue-950">
         {%for project in Projects%}
-            <div class="float-left mb-2 min-h-40 w-1/2 border border-blue-500 bg-blue-950">
+            <div class="float-left mb-2 min-h-40 w-1/4 border border-blue-500 bg-blue-950">
                 <h1 class="w-full break-words overflow-hidden line-clamp-1 float-left">{{project[0]}}</h1>
                 <p class="w-full break-words overflow-hidden max-h-32 line-clamp-4 float-left">{{project[1]}}</p>
                 <p class="w-full break-words overflow-hidden line-clamp-1 float-right">Author: {{project[2]}}</p>

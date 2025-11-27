@@ -80,8 +80,10 @@ Footer_Snippet = "partials/unified/unified_footer.html"
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-app.mount("/static", StaticFiles(directory=str(BASE_DIR / "templates")), name="templates")
+app.mount("/templates", StaticFiles(directory=str(BASE_DIR / "templates")), name="templates")
 app.mount("/images", StaticFiles(directory=str(BASE_DIR / "images")), name="images")
+app.mount("/tailwindCSS", StaticFiles(directory=str(BASE_DIR.parent / "static")), name="css")
+
 #! partial CSS to partial HTML
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates/html"))
 
