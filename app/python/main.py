@@ -91,11 +91,19 @@ async def main_page(request: Request, session: str = Cookie(default=None, alias=
     Body_Snippet = "partials/index_body.html"
     CSS_Name = "index"
     
-    return templates.TemplateResponse("layout.html", {"request" : request, "session": session, "Header_Snippet" : Header_Snippet,
-    "Status_Snippet" : Status_Snippet,
-    "Body_Snippet" : Body_Snippet,
-    "Footer_Snippet" : Footer_Snippet,
-    "CSS_Name" : CSS_Name,
+    Projects = db.query(models.profile.project_title,
+                        models.profile.project_content,
+                        models.profile.user_ID).filter(models.profile.private == False).limit(3)
+    
+    return templates.TemplateResponse("layout.html", {
+        "request" : request, 
+        "session": session, 
+        "Header_Snippet" : Header_Snippet,
+        "Status_Snippet" : Status_Snippet,
+        "Body_Snippet" : Body_Snippet,
+        "Footer_Snippet" : Footer_Snippet,
+        "CSS_Name" : CSS_Name,
+        "Projects" : Projects,
     })
 
 @app.get("/register", response_class=HTMLResponse, name="register")
