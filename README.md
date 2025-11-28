@@ -12,71 +12,80 @@
 ## Storing Projects
  - Ability to add projects tied to user account
  - Setting whenever they are meant to be public or kept private
- - [ ] Changing it's privacy state
  - Deleting projects (permament delete)
+ - [ ] Changing it's privacy state
 
 ## Searching
  - Searching though public projects and returning those which contains provided keyword in titles or description.
 
-## Home Page
+## Design Showcase
 
-## Register Page
-
-## Login Page
-
-## Profile Page
-
-### TechStack
- - DataBase Engine: SQLite
- - Backend: Python, FastAPI
- - Frontend: HTML, CSS
 
 ### Setting Up
  - Download DB Browser for SQLIte (or any other if you change DB Engine)
-    * [DB Browser](https://sqlitebrowser.org/)  
+     * [DB Browser](https://sqlitebrowser.org/)  
  - Python setup:
-    - Python 3.11.9 or later
-    - Create Virtual Environment
+     - Python 3.11.9 or later
+     - Create Virtual Environment
     ```py
-        # python -m venv .venv
-        # .venv\Scripts\activate
+        python -m venv .venv
+        .venv\Scripts\activate 
     ```
     ![Initializing_venv](Readme_files/Initialize_venv.gif)
-    - Install Dependencies
+     - Install Dependencies
     ```py
-        # pip install -r requirements.txt
+        pip install -r requirements.txt 
     ```
     ![Installing_Dependencies](Readme_files/Initializing_dependencies.gif)
-    
+ - TailwindCSS setup:
+     - Version v3 - due to CLI tools not available in v4
+     <details close>
+       <summary>Installing and setting up PostCSS module (Click Me)</summary>
 
-<!-- WebApp - Github
+      ## Download Node.js
+      * [Node.js](https://nodejs.org/en/download)
+      - Remember to run all of these commands in your projects' root folder!s
+        - Provide CMD with these commands:
+          - Initialize nmp:
+          ```cmd
+          npm init -y
+          ```
+          - Installing correct version of TailwindCSS and PostCSS module
+          ```cmd
+          npm install -D tailwindcss@3.4.4 postcss@8.4.38 autoprefixer@10.4.19
+          ```
+          <!-- this should be done \/ -->
+          - Create Tailwind config files:
+          ```cmd 
+          npx tailwindcss init
+          ```
+            - Depending on how you mount your static folders you will want to change input and out file path:
+            ```cmd 
+            "scripts": {
+                "build-css": "tailwindcss -i ./static/src/input.css -o ./static/css/output.css --watch --verbose"
+            },
+            ```
+          - Build your CSS file:
+          ```cmd 
+          npm run build-css
+          ```
+          This command will work until you hit CTRL + C, but keep it running when designing your html files.
+    </details>
+ - Launch your server live:
+    - With active Virtual Environment (venv):
+    ```py 
+    cd app/python
+    ```
+    - Go live with one of these command prompts:
+    ```py 
+    fastapi dev
+    ```
+    ```py 
+    uvicorn main:app --host 127.0.0.1 --port 8000
+    ```
+    server available on localhost IP adress with suffix ":8000" 
 
-WebAppURL - https://github.com/LostyGuy
-
-Why? - I see my future in it (I bet)
-
-What will I learn? - We'll see when we get there
-
-# Home Page
- - Login Button
- - Popular Repositories (top 5)
-# Log In Site
-
-# User Profile
- - list of recent repositories (last 6)
- - last activity (last login)
- - user profile photo and nickname
- - possibility to add and remove repos
-# "Repository"
- - Tabs: Code, Activity(Logs), Setting
-## File Browser
- - List of files
- - weight of file
- - last modifycation
-## Markdown display
- - Just like Github has
-
-## Extension Bar --  Percentage of language used in repo
- - Color for specific language (predefined)
- - Percentage of it next to it's name
- - Colorful bar that represents these data -->
+### TechStack
+ - DataBase Engine: SQLite
+ - Backend: Python, FastAPI, SQLAlchemy
+ - Frontend: HTML, TailwindCSS
