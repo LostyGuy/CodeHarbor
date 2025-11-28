@@ -1,21 +1,24 @@
-<br>
-<h1>Register</h1>
-<form action="/register_request" method="post">
-        <label for="nn">Nickname</label>
-        <input type="text" name="nickname" id="nn">
-        <br>
+<main class=" min-h-full w-full">
+    <section class="h-fit w-fit bg-blue-500/70 border-white border-4 rounded-md p-6">
+        <h1 class="text-white">Register</h1>
+        <form action="/register_request" method="post" class="text-white">
+            <label for="nn">Nickname</label>
+            <input type="text" name="nickname" id="nn" class="border border-black text-black">
+            <br>
 
-        <label for="em">Email</label>
-        <input type="email" name="email" id="em">
-        <br>
+            <label for="em">Email</label>
+            <input type="email" name="email" id="em" class="border border-black text-black">
+            <br>
 
-        <label for="pw">Password</label>
-        <input type="password" name="passwd" id="pw">
+            <label for="pw">Password</label>
+            <input type="password" name="passwd" id="pw" class="border border-black text-black">
 
-        <button type="submit">Register</button>
-    </form>
-    <p id="status"></p>
-        
+            <br>
+            <button type="submit" class="border-2 border-white p-1 rounded-md">Register</button>
+        </form>
+            <p id="status"></p>
+    </section>
+            
 
     <!-- Something's off -->
     <script>
@@ -30,3 +33,4 @@
             paragraph.style.color("red");
         }
     </script>
+</main>

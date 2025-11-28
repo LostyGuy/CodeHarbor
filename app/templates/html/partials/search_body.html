@@ -1,17 +1,14 @@
-<main>
+<main class="text-white h-full w-full">
     <br>
-    <section class="left">
+    <section class="bg-blue-600/70 h-1/2 w-1/2 border-white border-4 rounded-md p-6">
         <h1>Search Result For {{Search_Prompt}}</h1>
         {%for block in Search_Result%}
-            <section class="block">
-                {{block[1]}}
+            <section class="inline-block mb-2 min-h-40 w-2/5 border border-blue-500 bg-blue-950 justify-center items-center">
+                <p class="float-left w-full break-words overflow-hidden line-clamp-1">{{block[1]}}</p>
                 <br>
-                {{block[2]}}
+                <p class="float-left w-full break-words overflow-hidden line-clamp-1">{{block[2]}}</p>
             </section>
             <br>
         {%endfor%}
-    </section>
-    <section class="right">
-        Right Box
     </section>
 </main>

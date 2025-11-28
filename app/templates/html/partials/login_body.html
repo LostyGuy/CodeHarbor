@@ -1,13 +1,16 @@
-<main class="float_left">
-        <h1>Login</h1>
-        <form action="/login_request" method="post">
-                <label for="log">Login</label>
-                <input type="text" name="email">
-                <br>
+<main class="text-white h-full w-full">
+        <section class="bg-blue-600/70 h-fit w-fit border-white border-4 rounded-md p-6">
+                <h1>Login</h1>
+                <form action="/login_request" method="post">
+                        <label for="log">Login</label>
+                        <input type="text" name="email" class="border border-black text-black">
+                        <br>
 
-                <label for="passwd">Password</label>
-                <input type="password" name="passwd">
-
-                <button type="submit">Log In</button>
-        </form>
+                        <label for="passwd">Password</label>
+                        <input type="password" name="passwd" class="border border-black text-black">
+                        
+                        <br>
+                        <button type="submit" class="border-2 border-white p-1 rounded-md">Log In</button>
+                </form>
+        </section>
 </main>

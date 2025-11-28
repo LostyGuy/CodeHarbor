@@ -4,7 +4,8 @@ module.exports = {
     "./app/templates/**/*.html",
     "./app/templates/**/*.jinja",
     "./app/python/**/*.py",
-    "./static/src/**/*.{html,js,css}"
+    "./static/src/**/*.{html,js,css}",
+    "./templates/**/*.{html,js}"
   ],
   theme: {
     extend: {},

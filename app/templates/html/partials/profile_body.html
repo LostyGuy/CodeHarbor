@@ -1,12 +1,12 @@
-<main>
+<main class="h-full w-full bg-black pb-8 text-white">
     <br>
     <section class="blank_space"></section>
-    <section class="center">
+    <section class="mt-6 w-2/3 bg-blue-950 inline-block border-2 border-white rounded-md p-4">
         <h1>Projects</h1>
         {%for block in DB_Projects%}
-            <section class="block" id={{block[1]}}>
-                <h2>{{block[0]}}</h2>
-                <h4>{{block[1]}}</h4>
+            <section class="inline-block mb-2 min-h-40 w-2/5 border border-blue-500 bg-blue-950 justify-center items-center" id={{block[1]}}>
+                <h2 class="float-left w-full break-words overflow-hidden line-clamp-1">{{block[0]}}</h2>
+                <h4 class="float-left w-full break-words overflow-hidden line-clamp-1">{{block[1]}}</h4>
             </section>
         {%endfor%}
     </section>

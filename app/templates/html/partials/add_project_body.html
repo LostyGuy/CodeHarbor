@@ -1,24 +1,21 @@
-<main>
+<main class="h-full w-full bg-black pb-8 text-white">
     <br>
-    <section class="left">
+    <section class="mt-6 w-2/3 bg-blue-950 inline-block border-2 border-white rounded-md p-4">
         <form action="/loged/profile/add_project_request" method="post">
 
             <label for="project_title">Title</label>
-            <input type="text" name="project_title" id="title">
+            <input type="text" name="project_title" id="title" class="border border-black text-black">
             <br>
 
             <label for="project_content">Content</label>
-            <input type="text" name="project_content" id="content">
+            <input type="text" name="project_content" id="content" class="border border-black text-black">
             <br>
 
             <label for="is_private">Private?</label>
-            <input type="checkbox" name="is_private" id="private">
+            <input type="checkbox" name="is_private" id="private" class="border border-black text-black">
             <br>
 
-            <button type="submit">Add Project</button>
+            <button type="submit" class="border-2 border-white p-1 rounded-md">Add Project</button>
         </form>
-    </section>
-    <section class="right">
-        In Progress.. 
     </section>
 </main>
