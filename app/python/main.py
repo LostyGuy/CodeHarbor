@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request, Depends, Cookie
+from fastapi import FastAPI, Request, Depends, Cookie, UploadFile, File, Form
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse, RedirectResponse
@@ -13,6 +13,7 @@ from sqlalchemy import TIMESTAMP
 from jwcrypto.jwk import JWK
 from jwt import JWT, jwk_from_dict
 import json
+import os
 
 jwt = JWT()
 
@@ -84,7 +85,11 @@ app.mount("/templates", StaticFiles(directory=str(BASE_DIR / "templates")), name
 app.mount("/images", StaticFiles(directory=str(BASE_DIR / "images")), name="images")
 app.mount("/tailwindCSS", StaticFiles(directory=str(BASE_DIR.parent / "static")), name="css")
 
-#! partial CSS to partial HTML
+
+#! Additional table for folder path 
+#! Removing projects (soft)
+
+
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates/html"))
 
 @app.get("/", response_class=HTMLResponse, name="index")
@@ -95,7 +100,9 @@ async def main_page(request: Request, session: str = Cookie(default=None, alias=
     
     Projects = db.query(models.profile.project_title,
                         models.profile.project_content,
-                        models.profile.user_ID).filter(models.profile.private == False).limit(3)
+                        models.profile.user_ID).filter(
+                            models.profile.private == False,
+                            models.profile.accessable == "accessible").limit(4)
     
     return templates.TemplateResponse("layout.html", {
         "request" : request, 
@@ -324,27 +331,53 @@ async def add_project(request: Request, db: Session = Depends(database.get_db), 
     else:
         return RedirectResponse(url=app.url_path_for("index"), status_code=303)
 
-# TODO: logged and non logged view
 @app.post("/loged/profile/add_project_request", response_class=HTMLResponse)
-async def add_project(request: Request, db: Session = Depends(database.get_db), session: str = Cookie(default=None, alias="session")):
+async def add_project(
+    request: Request, 
+    db: Session = Depends(database.get_db), 
+    session: str = Cookie(default=None, alias="session"), 
+    project_files: list[UploadFile] = File(None),
+    project_title: str = Form(...),
+    project_content: str = Form(...),
+    project_is_private: bool = Form(False),):
     
     user_ID: int = db.query(models.session.user_ID).filter(models.session.token_value == session).first()[0]
     
-    project_data = await request.form()
-    project_title: str = str(project_data.get("project_title"))
-    project_content: str = str(project_data.get("project_content"))
-    project_is_private: bool = True if project_data.get("is_private") else False
+    # project_data = await request.form()
+    # project_title: str = str(project_data.get("project_title"))
+    # project_content: str = str(project_data.get("project_content"))
+    # project_is_private: bool = True if project_data.get("is_private") else False
 
-    
-    new_project_entry = models.profile(
-        user_ID = user_ID,
-        project_title = project_title,
-        project_content = project_content,
-        private = project_is_private,
-        time_stamp = dt.datetime.now(dt.timezone.utc),
-    )
-    db.add(new_project_entry)
-    db.commit()
+    try:
+        timestamp = dt.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        folder_path = f"{user_ID}_{timestamp}_{project_title}".replace("/", "_").replace("\\", "_")
+        UPLOAD_DIR = str(BASE_DIR / "storage" / "files")
+        full_path = f"{UPLOAD_DIR}/{folder_path}"
+        os.makedirs(full_path, exist_ok=True)
+        try:
+            if project_files:
+                for uploaded_file in project_files:
+                    file_path = str(f"{full_path}/{uploaded_file.filename}")
+                    with open(file_path, "wb") as buffer:
+                        buffer.write(await uploaded_file.read())
+        except Exception as e:
+            log_info("File Upload Error: ", e)
+    except Exception as e:
+        log_info("Folder Creation Error: ", e)
+
+    try:
+        new_project_entry = models.profile(
+            user_ID = user_ID,
+            project_title = project_title,
+            project_content = project_content,
+            private = project_is_private,
+            folder_path = str(folder_path),
+            time_stamp = dt.datetime.now(dt.timezone.utc),
+        )
+        db.add(new_project_entry)
+        db.commit()
+    except Exception as e:
+        log_info("Creating Project Entry Error: ", e)
     
     return RedirectResponse(url=app.url_path_for("profile"), status_code=303)
 

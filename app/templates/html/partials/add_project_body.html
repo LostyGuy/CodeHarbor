@@ -1,18 +1,22 @@
 <main class="h-full w-full bg-black pb-8 text-white">
     <br>
     <section class="mt-6 w-2/3 bg-blue-950 inline-block border-2 border-white rounded-md p-4">
-        <form action="/loged/profile/add_project_request" method="post">
+        <form action="/loged/profile/add_project_request" method="post" enctype="multipart/form-data">
 
             <label for="project_title">Title</label>
-            <input type="text" name="project_title" id="title" class="border border-black text-black">
+            <input type="text" required name="project_title" id="title" class="border border-black text-black">
             <br>
 
             <label for="project_content">Content</label>
             <input type="text" name="project_content" id="content" class="border border-black text-black">
             <br>
 
+            <label for="add files"></label>
+            <input type="file" name="project_files" multiple  class="border border-black text-black">
+            <br>
+
             <label for="is_private">Private?</label>
-            <input type="checkbox" name="is_private" id="private" class="border border-black text-black">
+            <input type="checkbox" name="project_is_private" id="is_private" class="border border-black text-black">
             <br>
 
             <button type="submit" class="border-2 border-white p-1 rounded-md">Add Project</button>

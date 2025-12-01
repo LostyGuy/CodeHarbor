@@ -54,14 +54,9 @@ class profile(Base):
         String,
         index=True,
     )
-    accessable: str = Column(
-        Boolean,
-        index=True
-    )
     time_stamp: str = Column(
         TIMESTAMP,
         index=True,
-        default="accessible"
         )
     
 class session(Base):

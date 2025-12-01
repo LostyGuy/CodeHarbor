@@ -9,12 +9,8 @@
                 <h4 class="float-left w-full break-words overflow-hidden line-clamp-1">{{block[1]}}</h4>
             </section>
         {%endfor%}
-    </section>
-    <section class="right">
-        <aside>
-            <button onclick='window.location.href=`{{ url_for("add_project")}}`'>
+        <button class="border-2 border-white p-1 rounded-md" onclick='window.location.href=`{{ url_for("add_project")}}`'>
             Add Project
             </button>
-        </aside>
     </section>
 </main>
