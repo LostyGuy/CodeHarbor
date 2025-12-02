@@ -34,7 +34,7 @@ def log_info(*message) -> None:
 #     log_info("Private||Public",jwk.export_private(as_dict=True), jwk.export_public(as_dict=True))
 # create_JWT_key()
 #! -------------------------------------------------------  
-    
+
 def create_encoded_JWT_token(iss_endpoint: str, aud_endpoint: str, user_ID: str, nickname: str,encription_key: dict,) -> str: # Token
     encription_key: str = jwk_from_dict(encription_key)
     now = dt.datetime.now(dt.timezone.utc)
@@ -85,24 +85,31 @@ app.mount("/templates", StaticFiles(directory=str(BASE_DIR / "templates")), name
 app.mount("/images", StaticFiles(directory=str(BASE_DIR / "images")), name="images")
 app.mount("/tailwindCSS", StaticFiles(directory=str(BASE_DIR.parent / "static")), name="css")
 
-
-#! Additional table for folder path 
-#! Removing projects (soft)
-
-
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates/html"))
 
+# TODO: \/ JOIN!
 @app.get("/", response_class=HTMLResponse, name="index")
 async def main_page(request: Request, session: str = Cookie(default=None, alias="session"), db: Session = Depends(database.get_db)):  
     Status_Snippet, session_active = active_session_HTML_Snippet(db, session,)
     Body_Snippet = "partials/index_body.html"
     CSS_Name = "index"
     
-    Projects = db.query(models.profile.project_title,
-                        models.profile.project_content,
-                        models.profile.user_ID).filter(
-                            models.profile.private == False,
-                            models.profile.accessable == "accessible").limit(4)
+    # Projects = db.query(models.project_details.project_title,
+    #                     models.project_details.project_content,
+    #                     models.project_details.user_ID).filter(
+    #                         models.profile.private == False,
+    #                         models.profile.accessable == "accessible").limit(4)
+    Projects = db.query(
+        models.project_details.project_title,
+        models.project_details.project_content,
+        models.project_details.project_ID,
+        models.users.nickname.label("author")
+    ).join(
+        models.users, models.users.ID == models.project_details.user_ID
+    ).filter(
+        models.profile.private == 0,
+        models.profile.accessable == "accessible"
+    ).limit(4).all()
     
     return templates.TemplateResponse("layout.html", {
         "request" : request, 
@@ -292,7 +299,10 @@ async def profile(request: Request, db: Session = Depends(database.get_db), sess
     CSS_Name = "profile"
     if active_session:
         user_ID: int = db.query(models.session.user_ID).filter(models.session.token_value == session).first()[0]
-        DB_Projects = db.query(models.profile.project_title, models.profile.project_content).filter(models.profile.user_ID == user_ID)
+        DB_Projects = db.query(
+            models.project_details.project_title, 
+            models.project_details.project_content, 
+            models.project_details.project_ID).filter(models.project_details.user_ID == user_ID)
         
         return templates.TemplateResponse("layout.html", {"request" : request, 
         "session": session,
@@ -342,11 +352,6 @@ async def add_project(
     project_is_private: bool = Form(False),):
     
     user_ID: int = db.query(models.session.user_ID).filter(models.session.token_value == session).first()[0]
-    
-    # project_data = await request.form()
-    # project_title: str = str(project_data.get("project_title"))
-    # project_content: str = str(project_data.get("project_content"))
-    # project_is_private: bool = True if project_data.get("is_private") else False
 
     try:
         timestamp = dt.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
@@ -366,13 +371,21 @@ async def add_project(
         log_info("Folder Creation Error: ", e)
 
     try:
-        new_project_entry = models.profile(
+        t_s = dt.datetime.now(dt.timezone.utc)
+        new_profile_project_entry = models.profile(
             user_ID = user_ID,
+            private = project_is_private,
+            time_stamp = t_s,
+        )
+        db.add(new_profile_project_entry)
+        db.commit()
+        project_ID = db.query(models.profile.ID).filter(models.profile.time_stamp == t_s)
+        new_project_entry = models.project_details(
+            user_ID = user_ID,
+            project_ID = project_ID,
             project_title = project_title,
             project_content = project_content,
-            private = project_is_private,
             folder_path = str(folder_path),
-            time_stamp = dt.datetime.now(dt.timezone.utc),
         )
         db.add(new_project_entry)
         db.commit()
@@ -381,6 +394,7 @@ async def add_project(
     
     return RedirectResponse(url=app.url_path_for("profile"), status_code=303)
 
+# TODO: \/New Tables
 # TODO: \/ JOIN on tables to display user's username instead of user_ID
 @app.get("/search_request", response_class=HTMLResponse)
 async def search(request: Request, session: str = Cookie(default=None, alias="session"), db: Session = Depends(database.get_db)):
@@ -419,7 +433,7 @@ async def search(request: Request, session: str = Cookie(default=None, alias="se
         })
 
 @app.get("/delete_user", response_class=HTMLResponse)
-async def solf_delete(request: Request, session: str = Cookie(default=None, alias="session"), db: Session = Depends(database.get_db)):
+async def solf_user_delete(request: Request, session: str = Cookie(default=None, alias="session"), db: Session = Depends(database.get_db)):
     Status_Snippet, session_active = active_session_HTML_Snippet(db, session,)
     
     if session_active:
@@ -452,3 +466,20 @@ async def solf_delete(request: Request, session: str = Cookie(default=None, alia
     else:
         log_info("Deletion passed without action")
         return RedirectResponse(url=app.url_path_for("index"), status_code = 303,)
+    
+@app.get("/project_delete{id}", response_class=HTMLResponse, name="delete_project")
+async def soft_repo_delete(request: Request, id: int, session: str = Cookie(default=None, alias="session"), db: Session = Depends(database.get_db)):
+    
+    Status_Snippet, session_active = active_session_HTML_Snippet(db, session,)
+    if session_active:
+        try:
+            db.query(models.profile).filter(models.profile.ID == id).update(
+            {models.profile.accessable: "revoked"},
+            synchronize_session=False
+        )
+            db.commit()
+        except Exception as e:
+            log_info("Project Removing Error: ", e)
+        return RedirectResponse(url=app.url_path_for("profile"), status_code=303,)
+    else:
+        return RedirectResponse(url=app.url_path_for("index"), status_code=303,)

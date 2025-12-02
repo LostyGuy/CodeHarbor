@@ -38,6 +38,38 @@ class profile(Base):
         Integer,
         index=True,
         )
+    private: str = Column(
+        Boolean,
+        index=True,
+        )
+    accessable: str = Column(
+        String,
+        index=True,
+        default="accessible"
+    )
+    time_stamp: str = Column(
+        TIMESTAMP,
+        index=True,
+        default="accessible"
+        )
+    
+class project_details(Base):
+    __tablename__ = "project_details"
+    ID: int = Column(
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+        index=True,
+        )
+    user_ID: int = Column(
+        Integer,
+        index=True,
+        )
+    project_ID: int = Column(
+        Integer,
+        index=True,
+        unique=True,
+    )
     project_title: str = Column(
         String(20), 
         index=True
@@ -46,23 +78,10 @@ class profile(Base):
         String(20),
         index=True,
         )
-    private: str = Column(
-        Boolean,
-        index=True,
-        )
     folder_path: str = Column(
         String,
         index=True,
     )
-    accessable: str = Column(
-        Boolean,
-        index=True
-    )
-    time_stamp: str = Column(
-        TIMESTAMP,
-        index=True,
-        default="accessible"
-        )
     
 class session(Base):
     __tablename__ = "session"

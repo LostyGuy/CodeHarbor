@@ -4,13 +4,12 @@
     <section class="mt-6 w-2/3 bg-blue-950 inline-block border-2 border-white rounded-md p-4">
         <h1>Projects</h1>
         {%for block in DB_Projects%}
-            <section class="inline-block mb-2 min-h-40 w-2/5 border border-blue-500 bg-blue-950 justify-center items-center" id={{block[1]}}>
+            <section class="inline-block mb-2 min-h-40 w-2/5 border border-blue-500 bg-blue-950 justify-center items-center" id={{block[2]}}>
                 <h2 class="float-left w-full break-words overflow-hidden line-clamp-1">{{block[0]}}</h2>
                 <h4 class="float-left w-full break-words overflow-hidden line-clamp-1">{{block[1]}}</h4>
+                <button class="border-2 border-white p-1 rounded-md" onclick='window.location.href=`{{ url_for("delete_project", id=block[2])}}`'>Delete</button>
             </section>
         {%endfor%}
-        <button class="border-2 border-white p-1 rounded-md" onclick='window.location.href=`{{ url_for("add_project")}}`'>
-            Add Project
-            </button>
+        <button class="border-2 border-white p-1 rounded-md" onclick='window.location.href=`{{ url_for("add_project")}}`'>Add Project</button>
     </section>
 </main>
