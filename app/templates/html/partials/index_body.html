@@ -1,11 +1,11 @@
 <main class="h-full w-full bg-black pb-8 text-white">
     <h3 class="mt-2 text-center">Lastly Added</h3>
     <section class="mt-6 w-2/3 bg-blue-950 inline-block border-2 border-white rounded-md p-4">
-        {%for project in Projects%}
+        {%for block in DB_Projects%}
             <div class="inline-block mb-2 min-h-40 w-2/5 border border-blue-500 bg-blue-950 justify-center items-center">
-                <h1 class="float-left w-full break-words overflow-hidden line-clamp-1">{{project[0]}}</h1>
-                <p class="float-left w-full break-words overflow-hidden max-h-32 line-clamp-4">{{project[1]}}</p>
-                <p class="float-left w-full break-words overflow-hidden line-clamp-1">Author: {{project[2]}}</p>
+                <h1 class="float-left w-full break-words overflow-hidden line-clamp-1">{{block[0]}}</h1>
+                <p class="float-left w-full break-words overflow-hidden max-h-32 line-clamp-4">{{block[1]}}</p>
+                <p class="float-left w-full break-words overflow-hidden line-clamp-1">Author: {{block[2]}}</p>
             </div>
         {%endfor%}
     </section>

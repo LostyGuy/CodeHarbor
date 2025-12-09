@@ -99,16 +99,15 @@ async def main_page(request: Request, session: str = Cookie(default=None, alias=
     #                     models.project_details.user_ID).filter(
     #                         models.profile.private == False,
     #                         models.profile.accessable == "accessible").limit(4)
-    Projects = db.query(
+    DB_Projects = db.query(
         models.project_details.project_title,
         models.project_details.project_content,
-        models.project_details.project_ID,
-        models.users.nickname.label("author")
+        models.project_details.user_ID
     ).join(
-        models.users, models.users.ID == models.project_details.user_ID
+        models.profile, models.profile.ID == models.project_details.project_ID
     ).filter(
         models.profile.private == 0,
-        models.profile.accessable == "accessible"
+        models.profile.accessable == "accessible",
     ).limit(4).all()
     
     return templates.TemplateResponse("layout.html", {
@@ -119,7 +118,7 @@ async def main_page(request: Request, session: str = Cookie(default=None, alias=
         "Body_Snippet" : Body_Snippet,
         "Footer_Snippet" : Footer_Snippet,
         "CSS_Name" : CSS_Name,
-        "Projects" : Projects,
+        "DB_Projects" : DB_Projects,
     })
 
 @app.get("/register", response_class=HTMLResponse, name="register")
@@ -301,8 +300,14 @@ async def profile(request: Request, db: Session = Depends(database.get_db), sess
         user_ID: int = db.query(models.session.user_ID).filter(models.session.token_value == session).first()[0]
         DB_Projects = db.query(
             models.project_details.project_title, 
-            models.project_details.project_content, 
-            models.project_details.project_ID).filter(models.project_details.user_ID == user_ID)
+            models.project_details.project_content,
+            models.project_details.user_ID,
+            models.project_details.project_ID,
+            ).join(models.profile, models.profile.ID == models.project_details.project_ID
+            ).filter(
+                models.project_details.user_ID == user_ID, 
+                models.profile.accessable == "accessible"
+            )
         
         return templates.TemplateResponse("layout.html", {"request" : request, 
         "session": session,

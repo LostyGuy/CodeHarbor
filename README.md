@@ -1,6 +1,6 @@
 # CodeHarbor
 
-**CodeHarbor** is a production-grade REST API application inspired by GitHub's core functionalities.It demonstrates advanced backend engineering, robust user management, session handling, and project/repository storage — supported by a clean, minimal frontend interface.
+**CodeHarbor** is a production-grade REST API application inspired by GitHub's core functionalities. It demonstrates advanced backend engineering, robust user management, session handling, and project/repository storage — supported by a clean, minimal frontend interface.
 
 ## User Handling
  - Endpoint to register a user
@@ -20,6 +20,7 @@
 
 ## Design Showcase
 
+ ![Five_sites](Readme_files/five_sites.jpg)
 
 ### Setting Up
  - Download DB Browser for SQLIte (or any other if you change DB Engine)
@@ -83,7 +84,10 @@
     ```py 
     uvicorn main:app --host 127.0.0.1 --port 8000
     ```
-    server available on localhost IP adress with suffix ":8000" 
+    - Server available on localhost IP adress with suffix ":8000" 
+    ```py
+    127.0.0.1:8000
+    ```
 
 ### TechStack
  - DataBase Engine: SQLite
